@@ -2,6 +2,7 @@
   "pages":[
     "pages/index/index",
     "pages/foodlist/foodlist",
+    "pages/about/about",
     "pages/logs/logs"
   ],
   "window":{
