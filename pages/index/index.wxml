@@ -1,0 +1,33 @@
+<!--index.wxml-->
+<view class="container">
+  <view class="userinfo">
+    <block wx:if="{{canIUseOpenData}}">
+      <view class="userinfo-avatar" bindtap="bindViewTap">
+        <open-data type="userAvatarUrl"></open-data>
+      </view>
+      <open-data type="userNickName"></open-data>
+    </block>
+    <block wx:elif="{{!hasUserInfo}}">
+      <button wx:if="{{canIUseGetUserProfile}}" bindtap="getUserProfile"> 获取头像昵称 </button>
+      <button wx:elif="{{canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
+      <view wx:else> 请使用1.4.4及以上版本基础库 </view>
+    </block>
+    <block wx:else>
+      <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
+      <text class="userinfo-nickname">{{userInfo.nickName}}</text>
+    </block>
+  </view>
+  <view class="timeIntro">
+    <text class="time-intro">{{eatWhat}}</text>
+  </view>
+  <view class="usermotto">
+    <button class="user-motto" bindtap="startViewTap">{{motto}}</button>
+  </view>
+  <view class="foodlist">
+    <button class="food-list" bindtap="viewFoodList">{{foodlist}}</button>
+  </view>
+  <view class="foodlist">
+    <button class="find-more" bindtap="findMore">发现更多</button>
+  </view>
+  <text class="userinfo-nickname" style='font-size:12px;margin-top:40px'>{{address}}</text>
+</view>
