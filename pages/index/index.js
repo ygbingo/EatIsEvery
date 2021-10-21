@@ -1,5 +1,6 @@
 // index.js
 // 获取应用实例
+const config = require('../../config/config.js');
 const app = getApp()
 
 Page({
@@ -15,6 +16,7 @@ Page({
     hasUserInfo: false,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
     canIUseGetUserProfile: false,
+    dishesObjects: null,
     canIUseOpenData: wx.canIUse('open-data.type.userAvatarUrl') && wx.canIUse('open-data.type.userNickName') // 如需尝试获取用户信息可改为false
   },
   // 事件处理函数
@@ -58,6 +60,11 @@ Page({
     
     
   },
+  viewFoodList(){
+    wx.navigateTo({
+      url: '../foodlist/foodlist'
+    })
+  },
 
   findMore() {
     wx.navigateToMiniProgram({
@@ -72,6 +79,7 @@ Page({
     }
     this.getNowTime()
     this.getLocation()
+    this.getDishesObjects()
   },
   getLocation(e) {
     var temp_address
@@ -135,10 +143,43 @@ Page({
     }
   },
   getFoodList(e) {
-    var foodlist = ['麻辣拌', '麻辣盆', '鸡骨架', '炸鸡', '汉堡']
+    var foodlist = []
+    this.data.dishesObjects.forEach(ele => {
+      foodlist.push(ele.name)
+    });
+    
     return foodlist
   },
   sleep(e, ms) {
     return new Promise(resolve=>setTimeout(resolve, ms))
+  },
+  getDishesObjects(){
+    var that = this
+    wx.getStorage({
+      key: 'dishesObjects',
+      success: function (res) {
+        console.log("成功获取到数据...")
+        console.log(res)
+        that.setData({
+          dishesObjects: res.data,
+          loading: false
+        });
+      },
+      fail: function (e) {
+        console.log(e,"没有找到，从配置中加载默认数据")
+        //没有找到，从配置中加载默认数据
+        wx.setStorage({
+          key: "dishesObjects",
+          data: config.dishesObjects,
+          success: function (res){
+            console.log("存储成功，重新读取...");
+            that.getDishesObjects();
+          },
+          fail: function () {
+            console.log("存储失败，提示用户...");
+          }
+        })
+      }
+    })
   }
 })

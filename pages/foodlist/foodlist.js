@@ -1,66 +1,45 @@
-// pages/foodlist/foodlist.js
+// index.js
+// 获取应用实例
+const config = require('../../config/config.js');
+
+const app = getApp()
 Page({
-
-  /**
-   * 页面的初始数据
-   */
   data: {
-
+    config,
+    checked: true,
+    dishesObjects: null,
   },
-
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad: function (options) {
-
+  
+  onLoad() {
+    this.getDishesObjects()
   },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-
+  getDishesObjects(){
+    var that = this
+    wx.getStorage({
+      key: 'dishesObjects',
+      success: function (res) {
+        console.log("成功获取到数据...")
+        console.log(res)
+        that.setData({
+          dishesObjects: res.data,
+          loading: false
+        });
+      },
+      fail: function (e) {
+        console.log(e,"没有找到，从配置中加载默认数据")
+        //没有找到，从配置中加载默认数据
+        wx.setStorage({
+          key: "dishesObjects",
+          data: config.dishesObjects,
+          success: function (res){
+            console.log("存储成功，重新读取...");
+            that.getDishesObjects();
+          },
+          fail: function () {
+            console.log("存储失败，提示用户...");
+          }
+        })
+      }
+    })
   },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-
-  }
 })
